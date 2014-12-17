@@ -14,6 +14,37 @@
  * a little simpler to work with.
  */
 
+
+//Scoring 
+function scoreReset() {
+    curScore = 0;
+    $("#score").text(parseInt(0));
+
+}
+
+setInterval(function() {myTimer();}, 1000);
+
+var highScore = parseInt($("#highScore").text()); //number
+var curScore = parseInt($("#score").text());  //number
+
+function myTimer() {
+    if (player.x >= 0 && player.x <= 404 && player.y >= 83 && player.y <= 249) {
+        curScore += 10; //number
+        $("#score").text(curScore); 
+        if (curScore > highScore) {
+            highScore = curScore;
+            $("#highScore").text(curScore);
+            
+        }
+    } else {
+        scoreReset();
+    }
+}
+
+//High Score
+
+
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -27,11 +58,14 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    $(".tableScore").after(canvas);
+    //doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
+
+     //Main is called repeatly
     function main() {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
@@ -41,6 +75,8 @@ var Engine = (function(global) {
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
+        //console.log("this is now " + now);
+        //console.log("this is dt" + dt);
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -53,6 +89,7 @@ var Engine = (function(global) {
          */
         lastTime = now;
 
+
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
@@ -63,6 +100,8 @@ var Engine = (function(global) {
      * particularly setting the lastTime variable that is required for the
      * game loop.
      */
+
+
     function init() {
         reset();
         lastTime = Date.now();
@@ -80,7 +119,15 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+
+    function checkCollisions() {
+        allEnemies.forEach(function(enemy) {
+            if (Math.abs(enemy.y - player.y) < 30 && Math.abs(enemy.x - player.x) <42) {
+                player.reset();
+            }
+        });
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,6 +142,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        //blueGem.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -132,7 +180,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 85.5);
             }
         }
 
@@ -153,6 +201,7 @@ var Engine = (function(global) {
         });
 
         player.render();
+        //blueGem.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -172,7 +221,11 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png' , 
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-princess-girl.png',
+        'images/Gem-Blue.png'
     ]);
     Resources.onReady(init);
 
@@ -180,5 +233,6 @@ var Engine = (function(global) {
      * object when run in a browser) so that developer's can use it more easily
      * from within their app.js files.
      */
+
     global.ctx = ctx;
 })(this);
