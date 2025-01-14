@@ -16,33 +16,31 @@
 
 
 //Scoring 
-function scoreReset() {
+const scoreReset = () => {
     curScore = 0;
-    $("#score").text(parseInt(0));
+    document.querySelector("#score").textContent = "0";
+};
 
-}
+let highScore = parseInt(document.querySelector("#highScore").textContent, 10);
+let curScore = parseInt(document.querySelector("#score").textContent, 10);
 
-setInterval(function() {myTimer();}, 1000);
-
-var highScore = parseInt($("#highScore").text()); //number
-var curScore = parseInt($("#score").text());  //number
-
-function myTimer() {
+const myTimer = () => {
     if (player.x >= 0 && player.x <= 404 && player.y >= 83 && player.y <= 249) {
-        curScore += 10; //number
-        $("#score").text(curScore); 
+        curScore += 10;
+        document.querySelector("#score").textContent = curScore;
+
         if (curScore > highScore) {
             highScore = curScore;
-            $("#highScore").text(curScore);
-            
+            document.querySelector("#highScore").textContent = curScore;
+            console.log("score being updated 1");
         }
     } else {
         scoreReset();
+        console.log("score being reset 2");
     }
-}
+};
 
-//High Score
-
+setInterval(myTimer, 1000);
 
 
 var Engine = (function(global) {
